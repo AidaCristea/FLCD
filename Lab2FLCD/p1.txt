@@ -1,0 +1,8 @@
+int array[1,2,3,4,5], i = 0, sum = 0, n = 5;
+whileLoop(i < n)
+{
+   sum = sum + array[i];
+   i = i + 1;
+}
+double average = sum / n;
+write average;
