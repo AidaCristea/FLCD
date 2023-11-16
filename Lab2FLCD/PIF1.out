@@ -58,3 +58,6 @@ identifier=(0,2)
 write=-1
 identifier=(1,2)
 ;=-1
+write=-1
+constant=(0,3)
+;=-1

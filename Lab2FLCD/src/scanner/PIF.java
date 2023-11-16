@@ -1,5 +1,6 @@
 package scanner;
 
+import FA.FiniteAutomata;
 import Pair.Pair;
 import symbolTbl.HashTable;
 import symbolTbl.SymbolTable;
@@ -13,8 +14,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class PIF {
 
@@ -50,30 +49,23 @@ public class PIF {
         try (BufferedReader reader = new BufferedReader(new FileReader(readingFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
-
-                List<String> lineTokens = new ArrayList<String>();
-                Matcher m = Pattern.compile("([^\"]\\S*|\".+?\")\\s*").matcher(line);
-                while (m.find())
-                    lineTokens.add(m.group(1));
+                String[] lineTokens = line.split("(?=[; ,()\\[\\]])|(?<=[; ,()\\[\\]])");
 
                 List<String> finalList = new ArrayList<>();
 
                 for (String s : lineTokens) {
+                    System.out.println(s);
+                    String response = stringChecker(s);
+                    if (!response.isEmpty()) {
+                        String message = "LexicalError for the token " + s + " on the line " + line + " " + response + "\n";
+                        //System.out.println(message);
+                        Files.writeString(Path.of(pifOut), message, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+                        Files.writeString(Path.of(stOut), message, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
 
-                    String[] rez = s.split("(?=[;,()\\[\\]])|(?<=[;,()\\[\\]])");
-                    for (String v : rez) {
-                        String response = stringChecker(v);
-                        if (!response.isEmpty()) {
-                            String message = "LexicalError for the token " + v + " on the line " + line + " " + response + "\n";
-                            //System.out.println(message);
-                            Files.writeString(Path.of(pifOut), message, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-                            Files.writeString(Path.of(stOut), message, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-
-                            ok = false;
-                            break;
-                        }
+                        ok = false;
+                        break;
                     }
-                    finalList.addAll(Arrays.asList(rez));
+                    finalList.addAll(Arrays.asList(s));
                 }
                 readLines.addAll(finalList);
             }
@@ -155,6 +147,35 @@ public class PIF {
         }
     }
 
+    public boolean isIntegerConstant(String str) {
+        FiniteAutomata faInt = new FiniteAutomata("D:\\FACULTATE\\Materiale facultate 2023-2024\\LFTC\\Labs\\Lab3\\FLCD\\Lab2FLCD\\src\\FA\\IntegerConstant.in");
+        faInt.readFile();
+        if (!faInt.isDFA())
+            System.out.println("Not a valid DFA");
+
+        return faInt.isAccepted(str);
+
+    }
+
+    public boolean isStringConstant(String str) {
+        FiniteAutomata faStr = new FiniteAutomata("D:\\FACULTATE\\Materiale facultate 2023-2024\\LFTC\\Labs\\Lab3\\FLCD\\Lab2FLCD\\src\\FA\\StringConstant.in");
+        faStr.readFile();
+        if (!faStr.isDFA())
+            System.out.println("Not a valid DFA");
+
+        return faStr.isAccepted(str);
+    }
+
+    public boolean isIdentifier(String str) {
+        FiniteAutomata faIdentifier = new FiniteAutomata("D:\\FACULTATE\\Materiale facultate 2023-2024\\LFTC\\Labs\\Lab3\\FLCD\\Lab2FLCD\\src\\FA\\Identifiers.in");
+        faIdentifier.readFile();
+        if (!faIdentifier.isDFA())
+            System.out.println("Not a valid DFA");
+
+        return faIdentifier.isAccepted(str);
+    }
+
+
     public void constructPif(ArrayList<String> readLines, String pifOut, String stOut) {
         //here the pif is created
         //we take each token from the readLines array list, we check if it is not equal to empty space, in case of which we check if that string exists in the tokens read from the token.in file
@@ -174,14 +195,13 @@ public class PIF {
                 if (tokens.contains(s)) {
                     pif.add(new Pair(s, "-1"));
                 } else {
-                    if (isInteger(s)) {
+                    if (isIntegerConstant(s)) {
                         operation(sb, pif, "constant", s);
-                    } else if (s.startsWith("\"") && s.endsWith("\"")) {
-
+                    } else if (isStringConstant(s)) {
                         operation(sb, pif, "constant", s);
-
                     } else {
                         operation(sb, pif, "identifier", s);
+
                     }
                 }
             }
@@ -197,7 +217,6 @@ public class PIF {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        /*System.out.println(pif);
-        System.out.println(sb);*/
+
     }
 }

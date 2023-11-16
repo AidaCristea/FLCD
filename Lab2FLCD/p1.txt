@@ -6,3 +6,4 @@ whileLoop(i < n)
 }
 double average = sum / n;
 write average;
+write "and";
