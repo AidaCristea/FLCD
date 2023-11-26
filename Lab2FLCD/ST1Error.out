@@ -1,0 +1,2 @@
+LexicalError for the token ?i on the line int array[1,2,3,4,5], ?i = 0, sum = 0, n = 5; Cannot start with that character
+LexicalError for the token While on the line While(i < n) Cannot start with a capital letter

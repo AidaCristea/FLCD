@@ -1,3 +1,7 @@
+package symbolTbl;
+
+import Pair.Pair;
+
 public class SymbolTable {
 
     HashTable hashTable;
@@ -18,11 +22,11 @@ public class SymbolTable {
         return hashTable.search(key);
     }
 
-    public String find(String key) {
+    public Pair<Integer, Integer> find(String key) {
         return hashTable.findValue(key);
     }
 
     public String toString() {
-        return "SymbolTable " + hashTable.toString();
+        return "symbolTbl.SymbolTable " + hashTable.toString();
     }
 }

@@ -1,3 +1,7 @@
+package symbolTbl;
+
+import Pair.Pair;
+
 import java.util.ArrayList;
 
 public class HashTable {
@@ -53,7 +57,7 @@ public class HashTable {
         }
     }
 
-    public String findValue(String key) {
+   /* public String findValue(String key) {
         //return the index of the array and the position of that key
         Integer index = hashFunction(key);
         ArrayList<String> bucket = hashtable.get(index);
@@ -61,6 +65,19 @@ public class HashTable {
         for (int i = 0; i < bucket.size(); i++) {
             if (bucket.get(i).equals(key))
                 return "The key is in the array with the index " + index + " on position " + i;
+        }
+        return null;
+    }*/
+
+
+    public Pair<Integer, Integer> findValue(String key) {
+        //return the index of the array and the position of that key
+        Integer index = hashFunction(key);
+        ArrayList<String> bucket = hashtable.get(index);
+
+        for (int i = 0; i < bucket.size(); i++) {
+            if (bucket.get(i).equals(key))
+                return new Pair<>(index, i);
         }
         return null;
     }

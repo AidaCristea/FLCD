@@ -1,0 +1,14 @@
+int array[], n, sum = 0, i;
+read n;
+forLoop(i = 0; i < n; i = i + 1)
+{
+   read array[i];
+}
+forLoop(i = 0; i < n; i = i + 1)
+{
+   if(array[i] % 2 == 0)
+   {
+       sum = sum + array[i];
+   }
+}
+write sum;
