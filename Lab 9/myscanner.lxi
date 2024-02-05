@@ -1,0 +1,70 @@
+
+%{
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "parser.tab.h"
+int currentLine=1;
+%}
+
+%option noyywrap
+
+IDENTIFIER     [a-zA-Z_][a-zA-Z0-9_]*
+INT_CONST      0|[-]?[1-9][0-9]*
+DOUBLE_CONST   [-]?[1-9][0-9]*([.][0-9]+)|[-]?0[.][0-9]+
+STRING_CONST   [\"][a-zA-Z0-9 ]*[\"]
+
+
+
+%%
+
+"read"         {printf("Reserved words: %s\n", yytext); return READ;}
+"write"        {printf("Reserved words: %s\n", yytext); return WRITE;}
+"if"           {printf("Reserved words: %s\n", yytext); return IF;}
+"else"         {printf("Reserved words: %s\n", yytext); return ELSE;}
+"whileLoop"    {printf("Reserved words: %s\n", yytext);return WHILELOOP;}
+"forLoop"      {printf("Reserved words: %s\n", yytext);return FORLOOP;}
+"int"          {printf("Reserved words: %s\n", yytext);return INT;}
+"double"       {printf("Reserved words: %s\n", yytext);return DOUBLE;}
+"string"       {printf("Reserved words: %s\n", yytext);return STRING;}
+{IDENTIFIER}     {printf("Identifier %s\n", yytext); return IDENTIFIER;}
+{INT_CONST}      {printf("Integer constant: %s\n", yytext); return INT_CONST;}
+{STRING_CONST}   {printf("String constant: %s\n", yytext); return STRING_CONST;}
+{DOUBLE_CONST}      {printf("Double constant: %s\n", yytext); return DOUBLE_CONST;}
+
+
+"+"      {printf("Operator: %s\n", yytext);return plus;}
+"-"      {printf("Operator: %s\n", yytext);return minus;}
+"*"	 {printf("Operator: %s\n", yytext);return mul;}
+"/"	 {printf("Operator: %s\n", yytext);return division;}
+"%"	 {printf("Operator: %s\n", yytext);return mod;}
+"<"    { printf("Operator: %s\n", yytext); return less; }
+"<="   { printf("Operator: %s\n", yytext); return lessOrEqual; }
+"=="   { printf("Operator: %s\n", yytext); return equal; }
+"!="   { printf("Operator: %s\n", yytext); return different; }
+">="   { printf("Operator: %s\n", yytext); return greaterOrEqual; }
+">"    { printf("Operator: %s\n", yytext); return greater; }
+"="    { printf("Operator: %s\n", yytext); return assign; }
+
+
+"{"    { printf("Separator: OpenBrace\n"); return openBrace; }
+"}"    { printf("Separator: CloseBrace\n"); return closeBrace; }
+"["    { printf("Separator: OpenBracket\n"); return openBracket; }
+"]"    { printf("Separator: CloseBracket\n"); return closeBracket; }
+"("    { printf("Separator: OpenParenthese\n"); return openParenthese; }
+")"    { printf("Separator: CloseParenthese\n"); return closeParenthese; }
+","    { printf("Separator: Comma\n"); return comma; }
+";"    { printf("Separator: Semicolon\n"); return semicolon; }
+
+
+[ \n]+ {currentLine++;}
+[ \t]+   {}
+
+[0-9][a-zA-Z0-9_]*		{printf("Illegal identifier at line %d\n", currentLine);}
+[+|-]0		{printf("Illegal numeric constant at line %d\n", currentLine);}
+[+|-]?[0][0-9]*([.][0-9]*)?		{printf("Illegal numeric constant at line %d\n", currentLine);}
+[\"][a-zA-Z0-9_]+|[a-zA-Z0-9_]+[\"]		{printf("Illegal string constant at line %d\n", currentLine);}
+
+
+%%
+

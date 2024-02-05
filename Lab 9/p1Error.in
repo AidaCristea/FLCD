@@ -1,0 +1,12 @@
+int array[1,2,3,4,5] ; int 9i ; int sum ; int n ; double average ;
+average = 7.2 ;
+i = 0 ;
+sum = +0 ;
+n = 5 ;
+whileLoop(i < n)                              
+{
+  sum = sum + array[i]; 
+  i = i + 1;
+}
+double average = sum / n;
+write average;
